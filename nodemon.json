@@ -4,7 +4,7 @@
   ],
   "ext": "ts",
   "ignore": [],
-  "exec": "tsc && homebridge -I -D -P ../homebridge-yeelighter",
+  "exec": "tsc && homebridge -I -D -P ../homebridge-zz-yeelighter-effects",
   "signal": "SIGTERM",
   "env": {
     "NODE_OPTIONS": "--trace-warnings"

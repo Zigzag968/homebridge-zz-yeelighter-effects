@@ -52,6 +52,30 @@ export class YeelighterPlatform implements DynamicPlatformPlugin {
       this.log.debug("** Discovery Started **");
     });
     this.agent.on("didDiscoverDevice", this.onDeviceDiscovery);
+
+    // Create a switch service
+    const switchService = new this.Service.Switch("Example Switch", "example-switch");
+    switchService
+      .getCharacteristic(this.Characteristic.On)
+      .on("set", (value, callback) => {
+      this.log.info("Switch set to " + value);
+      const lights = this.accessories.filter(accessory => 
+        accessory.services.some(service => service.constructor.name === "Lightbulb")
+      );
+      this.log.info("Found lights:", lights.map(accessory => accessory.displayName));
+      callback();
+      })
+      .on("get", (callback) => {
+      const switchState = false; // Replace with actual state
+      this.log.info("Switch state is " + switchState);
+      callback(null, switchState);
+      });
+
+    // Register the switch service
+    const switchAccessory = new this.api.platformAccessory("Example Switch", this.api.hap.uuid.generate("example-switch"));
+    switchAccessory.addService(switchService);
+    this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [switchAccessory]);
+
     // When this event is fired it means Homebridge has restored all cached accessories from disk.
     // Dynamic Platform plugins should only register new accessories after this event was fired,
     // in order to ensure they weren't added to homebridge already. This event can also be used
